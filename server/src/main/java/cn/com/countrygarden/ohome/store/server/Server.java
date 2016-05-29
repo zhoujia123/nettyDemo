@@ -1,5 +1,6 @@
 package cn.com.countrygarden.ohome.store.server;
 
+import cn.com.countrygarden.ohome.store.server.codec.StoreEncoder;
 import cn.com.countrygarden.ohome.store.server.handlers.DiscardServerHandler;
 import cn.com.countrygarden.ohome.store.server.handlers.TimeServerHandler;
 import io.netty.bootstrap.ServerBootstrap;
@@ -31,7 +32,7 @@ public class Server {
                     .childHandler(new ChannelInitializer<SocketChannel>() { // (4)
                         @Override
                         public void initChannel(SocketChannel ch) throws Exception {
-                            ch.pipeline().addLast(new TimeServerHandler());
+                            ch.pipeline().addLast(new StoreEncoder());
                         }
                     })
                     .option(ChannelOption.SO_BACKLOG, 128)          // (5)

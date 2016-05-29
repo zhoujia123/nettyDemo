@@ -18,7 +18,7 @@ public class StoreProtocol implements Serializable {
     /**
      * 数据长度  2Byte, 除开始字节和结束字节外,数据包的长度
      */
-    private byte[] LEN = new byte[2];
+    private short LEN;
 
     /**
      * 设备地址  6Byte,控制器的实际地址，若采用TCP/IP通讯方式，地址为0
@@ -33,10 +33,10 @@ public class StoreProtocol implements Serializable {
     /**
      * 命令、状态 2byte,当第一字节不为0时，说明是命令，和第2字节一起用于指明本数据包的含义，在问方发数据时使用该方式；当第一字节为0时，说明是状态返回，第2字节即操作是否成功。
      */
-    private byte[] COM = new byte[2];
+    private short COM;
 
     /**
-     * 传输数据
+     * 传输数据  N byte, 通讯数据的内容,包含各参数或操作结果，可以为空。
      */
     private byte[] INFO;
 
@@ -50,12 +50,26 @@ public class StoreProtocol implements Serializable {
      */
     private byte EOI = 0x03;
 
+    public StoreProtocol() {
+    }
 
-    public byte[] getLEN() {
+    public StoreProtocol(byte SOI, short LEN, byte[] ADDR, byte TYPE, short COM, byte[] INFO, byte CHK, byte EOI) {
+        this.SOI = SOI;
+        this.LEN = LEN;
+        this.ADDR = ADDR;
+        this.TYPE = TYPE;
+        this.COM = COM;
+        this.INFO = INFO;
+        this.CHK = CHK;
+        this.EOI = EOI;
+    }
+
+
+    public short getLEN() {
         return LEN;
     }
 
-    public void setLEN(byte[] LEN) {
+    public void setLEN(short LEN) {
         this.LEN = LEN;
     }
 
@@ -67,11 +81,11 @@ public class StoreProtocol implements Serializable {
         this.ADDR = ADDR;
     }
 
-    public byte[] getCOM() {
+    public short getCOM() {
         return COM;
     }
 
-    public void setCOM(byte[] COM) {
+    public void setCOM(short COM) {
         this.COM = COM;
     }
 
@@ -85,24 +99,6 @@ public class StoreProtocol implements Serializable {
 
     public byte getCHK() {
         return CHK;
-    }
-
-    /**
-     * 设置校验字
-     */
-    public void setCHK() {
-        byte result = 0;
-        for (byte a : ADDR) {
-            result ^= a;
-        }
-        result ^= TYPE;
-        for (byte a : COM) {
-            result ^= a;
-        }
-        for (byte a : INFO) {
-            result ^= a;
-        }
-        this.CHK = result;
     }
 
 }
